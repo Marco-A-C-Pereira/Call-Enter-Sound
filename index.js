@@ -1,15 +1,20 @@
-const { exec } = require("child_process");
+const cmd = require("node-cmd");
+const ipc = require("node-ipc");
 var path = require("path");
 
 const soundID = 1;
-const filePath = `C:\\Program Files (x86)\\Steam\\steamapps\\common\\Soundpad`;
+const filePath = "c:/Program Files (x86)/Steam/steamapps/common/Soundpad";
 const playCommand = `-rc DoPlaySound(${soundID})`;
 const doPlay = `${filePath} ${playCommand}`;
 
-exec(doPlay);
-// console.log(doPlay);
+cmd.run(
+  "c:/Program Files (x86)/Steam/steamapps/common/Soundpad -rc DoPlaySound(1)"
+);
 
-console.log(typeof path.parse(filePath));
+// cmd.run("c:/Program Files (x86)/Steam/steamapps/common/Soundpad.exe");
+
+// console.log(path.resolve(filePath));
+// console.log(typeof path.parse(filePath));
 
 // console.log(filePath);
 // console.log(doPlay);
