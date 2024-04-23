@@ -12,7 +12,8 @@ let payload = {
   op: 2,
   d: {
     token: ENV.GATEWAY_TOKEN,
-    intents: 33280,
+    intents: 128,
+    // intents: 33280,
     properties: {
       $os: "windows",
       $browser: "chrome",
@@ -27,7 +28,10 @@ const heartbeat = (ms) => {
   }, ms);
 };
 
-const startWebStocket = () => {
+const startWebSocket = () => {
+  let clientUserId;
+  let clientCurrentChanel = null;
+
   if (ws && ws.readyState !== 3) ws.close();
 
   let wasReady = false;
@@ -57,7 +61,7 @@ const startWebStocket = () => {
     if (wasReady) console.log("Gateway closed, trying to reconnect");
 
     setTimeout(() => {
-      startWebStocket();
+      startWebSocket();
     }, 2500);
   });
 
@@ -84,6 +88,8 @@ const startWebStocket = () => {
         console.log("Gateway Ready");
         url = d.resume_gateway_url;
         sessionId = d.session_id;
+
+        clientUserId = d.user.id;
         break;
 
       case "RESUME":
@@ -91,13 +97,17 @@ const startWebStocket = () => {
         break;
 
       case "VOICE_STATE_UPDATE":
-        let author = d.author.username;
-        let disc = d.author.discriminator;
-        let content = d.content;
+        const isFromUser = clientUserId === d.user_id;
+        const canPlay =
+          clientCurrentChanel == null ||
+          (d.channel_id !== null && clientCurrentChanel != d.channel_id);
 
-        console.log(`${author}#${disc}: ${content}`);
+        if (isFromUser && canPlay) console.log("Doot");
+
+        clientCurrentChanel = d.channel_id;
+        break;
     }
   });
 };
 
-startWebStocket();
+startWebSocket();
