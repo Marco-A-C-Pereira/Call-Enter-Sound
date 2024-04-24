@@ -1,5 +1,8 @@
 import WebSocket from "ws";
 import ENV from "./config.json" assert { type: "json" };
+import { playSound } from "./soundpad.js";
+
+export { startWebSocket, discordGateStatus };
 
 const gatewayUrl = "wss://gateway.discord.gg/";
 let url = gatewayUrl,
@@ -12,7 +15,7 @@ let payload = {
   op: 2,
   d: {
     token: ENV.GATEWAY_TOKEN,
-    intents: 128,
+    intents: 128, // Just to read guild activity
     // intents: 33280,
     properties: {
       $os: "windows",
@@ -21,6 +24,8 @@ let payload = {
     },
   },
 };
+
+let discordGateStatus = false;
 
 const heartbeat = (ms) => {
   return setInterval(() => {
@@ -63,6 +68,8 @@ const startWebSocket = () => {
     setTimeout(() => {
       startWebSocket();
     }, 2500);
+
+    discordGateStatus = false;
   });
 
   ws.on("message", function incoming(data) {
@@ -90,6 +97,7 @@ const startWebSocket = () => {
         sessionId = d.session_id;
 
         clientUserId = d.user.id;
+        discordGateStatus = true;
         break;
 
       case "RESUME":
@@ -102,12 +110,14 @@ const startWebSocket = () => {
           clientCurrentChanel == null ||
           (d.channel_id !== null && clientCurrentChanel != d.channel_id);
 
-        if (isFromUser && canPlay) console.log("Doot");
+        if (isFromUser && canPlay) {
+          setTimeout(() => {
+            playSound();
+          }, 500);
+        }
 
         clientCurrentChanel = d.channel_id;
         break;
     }
   });
 };
-
-startWebSocket();

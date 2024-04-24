@@ -1,21 +1,24 @@
-const cmd = require("node-cmd");
-const ipc = require("node-ipc");
-var path = require("path");
+import { soundpadPipeStatus } from "./soundpad.js";
+import { startWebSocket, discordGateStatus } from "./discord.js";
+import {
+  checkBothRunning,
+  isDiscordRunning,
+  isSoundpadRunning,
+  wait,
+} from "./utils.js";
 
-const soundID = 1;
-const filePath = "c:/Program Files (x86)/Steam/steamapps/common/Soundpad";
-const playCommand = `-rc DoPlaySound(${soundID})`;
-const doPlay = `${filePath} ${playCommand}`;
+async function main() {
+  console.log("Soundpad Pipe:", soundpadPipeStatus);
+  console.log("Discord Gate:", discordGateStatus);
+  startWebSocket();
+  while (!checkBothRunning()) {
+    console.log("Discord is: ", isDiscordRunning ? "Running" : "Not Running");
+    console.log("Soundpad is: ", isSoundpadRunning ? "Running" : "Not Running");
 
-cmd.run(
-  "c:/Program Files (x86)/Steam/steamapps/common/Soundpad -rc DoPlaySound(1)"
-);
+    await wait(250);
+  }
 
-// cmd.run("c:/Program Files (x86)/Steam/steamapps/common/Soundpad.exe");
+  console.log("Both are running");
+}
 
-// console.log(path.resolve(filePath));
-// console.log(typeof path.parse(filePath));
-
-// console.log(filePath);
-// console.log(doPlay);
-// console.log("aaaaa");
+main();
