@@ -1,4 +1,5 @@
 import { exec } from "child_process";
+import { resolve } from "path";
 
 export { isDiscordRunning, isSoundpadRunning, checkBothRunning, wait };
 
@@ -17,15 +18,28 @@ function isRunning(processName, cb) {
   });
 }
 
-function checkBothRunning() {
-  isRunning("Discord.exe", (status) => {
-    isDiscordRunning = status;
-  });
-  isRunning("Soundpad.exe", (status) => {
-    isSoundpadRunning = status;
-  });
+async function checkBothRunning() {
+  let isBothRunning = isDiscordRunning == true && isSoundpadRunning == true;
 
-  return isDiscordRunning == true && isSoundpadRunning == true;
+  while (!isBothRunning) {
+    isRunning("Discord.exe", (status) => {
+      console.log("Discord is: ", isDiscordRunning ? "Running" : "Not Running");
+      isDiscordRunning = status;
+    });
+    isRunning("Soundpad.exe", (status) => {
+      console.log(
+        `Soundpad is: ${isSoundpadRunning ? "Running" : "Not Running"}`
+      );
+
+      isSoundpadRunning = status;
+    });
+
+    isBothRunning = isDiscordRunning == true && isSoundpadRunning == true;
+
+    await wait(250);
+  }
+
+  resolve;
 }
 
 function wait(ms) {
