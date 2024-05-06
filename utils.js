@@ -1,45 +1,65 @@
 import { exec } from "child_process";
-import { resolve } from "path";
 
-export { isDiscordRunning, isSoundpadRunning, checkBothRunning, wait };
+export { isRunning, checkBothRunning, wait, watchingStatus };
 
-let isDiscordRunning;
-let isSoundpadRunning;
+let watchingStatus = {};
+const discordName = "Discord";
+const soundpadName = "Soundpad";
+watchingStatus[discordName] = false;
+watchingStatus[soundpadName] = false;
 
-function isRunning(processName, cb) {
-  exec("tasklist", (err, stdout, stderr) => {
-    const isProcessRunning =
-      stdout.toLowerCase().indexOf(processName.toLowerCase()) > -1;
+async function isRunning(processName) {
+  return new Promise((resolve, reject) => {
+    exec("tasklist", (err, stdout, stderr) => {
+      const isProcessRunning =
+        stdout.toLowerCase().indexOf(processName.toLowerCase()) > -1;
 
-    // console.log(stdout.toLowerCase().indexOf(processName.toLowerCase()) > -1);
-    // console.log(isProcessRunning);
-
-    cb(stdout.toLowerCase().indexOf(processName.toLowerCase()) > -1);
+      resolve(isProcessRunning);
+    });
   });
 }
 
+async function checkRunning(process) {
+  let processStatus = await isRunning(process);
+  console.log(processStatus);
+
+  setInterval(async () => {
+    processStatus = await isRunning(process);
+    console.log(processStatus);
+  }, 250);
+}
+
+async function runningWatcher(process) {
+  const treatedName = process.split(".")[0];
+  watchingStatus[treatedName] = await isRunning(process);
+
+  setInterval(async () => {
+    let prevState = watchingStatus[treatedName];
+    let currState = await isRunning(process);
+
+    if (prevState !== currState) {
+      console.log(watchingStatus[treatedName]);
+      watchingStatus[treatedName] = currState;
+    }
+
+    watchingStatus[treatedName] = currState;
+  }, 250);
+}
+
 async function checkBothRunning() {
-  let isBothRunning = isDiscordRunning == true && isSoundpadRunning == true;
+  let isBothRunning =
+    watchingStatus.Discord == true && watchingStatus.Soundpad == true;
 
   while (!isBothRunning) {
-    isRunning("Discord.exe", (status) => {
-      console.log("Discord is: ", isDiscordRunning ? "Running" : "Not Running");
-      isDiscordRunning = status;
-    });
-    isRunning("Soundpad.exe", (status) => {
-      console.log(
-        `Soundpad is: ${isSoundpadRunning ? "Running" : "Not Running"}`
-      );
-
-      isSoundpadRunning = status;
-    });
-
-    isBothRunning = isDiscordRunning == true && isSoundpadRunning == true;
+    isBothRunning =
+      watchingStatus.Discord == true && watchingStatus.Soundpad == true;
 
     await wait(250);
   }
 
-  resolve;
+  console.log(isBothRunning);
+
+  return isBothRunning;
 }
 
 function wait(ms) {
@@ -47,3 +67,10 @@ function wait(ms) {
     setTimeout(resolve, ms);
   });
 }
+
+function main() {
+  runningWatcher("Discord.exe");
+  runningWatcher("Soundpad.exe");
+}
+
+main();

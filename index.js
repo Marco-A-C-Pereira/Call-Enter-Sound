@@ -1,17 +1,15 @@
 import { soundpadPipeStatus } from "./soundpad.js";
 import { startWebSocket, discordGateStatus } from "./discord.js";
-import {
-  isDiscordRunning,
-  isSoundpadRunning,
-  checkBothRunning,
-  wait,
-} from "./utils.js";
+import { checkBothRunning, wait, isRunning, watchingStatus } from "./utils.js";
 
 async function main() {
-  await checkBothRunning();
-  console.log("Soundpad Pipe:", soundpadPipeStatus);
-  console.log("Discord Gate:", discordGateStatus);
-  startWebSocket();
+  while (!(await checkBothRunning())) {
+    console.log("waiting");
+    await wait(250);
+  }
+
+  // console.log("Soundpad Pipe:", soundpadPipeStatus);
+  // console.log("Discord Gate:", discordGateStatus);
 
   console.log("Both are running");
 

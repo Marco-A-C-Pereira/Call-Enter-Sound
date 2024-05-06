@@ -1,6 +1,7 @@
 import WebSocket from "ws";
 import ENV from "./config.json" assert { type: "json" };
 import { playSound } from "./soundpad.js";
+import { isRunning, wait, watchingStatus } from "./utils.js";
 
 export { startWebSocket, discordGateStatus };
 
@@ -26,6 +27,15 @@ let payload = {
 };
 
 let discordGateStatus = false;
+
+async function main() {
+  while (await !isRunning("Discord.exe")) {
+    console.log("Waiting for discord");
+    await wait(250);
+  }
+
+  startWebSocket();
+}
 
 const heartbeat = (ms) => {
   return setInterval(() => {
@@ -121,3 +131,5 @@ const startWebSocket = () => {
     }
   });
 };
+
+main();
