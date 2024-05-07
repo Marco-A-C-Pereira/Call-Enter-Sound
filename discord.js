@@ -28,15 +28,6 @@ let payload = {
 
 let discordGateStatus = false;
 
-async function main() {
-  while (await !isRunning("Discord.exe")) {
-    console.log("Waiting for discord");
-    await wait(250);
-  }
-
-  startWebSocket();
-}
-
 const heartbeat = (ms) => {
   return setInterval(() => {
     ws.send(JSON.stringify({ op: 1, d: null }));
@@ -73,11 +64,14 @@ const startWebSocket = () => {
   });
 
   ws.on("close", function close() {
-    if (wasReady) console.log("Gateway closed, trying to reconnect");
+    if (wasReady && watchingStatus.Discord)
+      console.log("Gateway closed, trying to reconnect");
 
-    setTimeout(() => {
-      startWebSocket();
-    }, 2500);
+    if (watchingStatus.Discord) {
+      setTimeout(() => {
+        startWebSocket();
+      }, 2500);
+    }
 
     discordGateStatus = false;
   });
@@ -132,4 +126,18 @@ const startWebSocket = () => {
   });
 };
 
-main();
+function discordOperations() {
+  setInterval(async () => {
+    if (watchingStatus.Discord && ws == undefined) {
+      console.log("Discord Service is starting ...");
+      startWebSocket();
+    } else if (!watchingStatus.Discord && ws !== undefined) {
+      console.log("Discord Service is shutting down ..."); // TODO: Fix LOG SPAM
+      url = gatewayUrl;
+      await ws.close();
+      ws = undefined;
+    }
+  }, 250);
+}
+
+discordOperations();
