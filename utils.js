@@ -21,11 +21,9 @@ async function isRunning(processName) {
 
 async function checkRunning(process) {
   let processStatus = await isRunning(process);
-  console.log(processStatus);
 
   setInterval(async () => {
     processStatus = await isRunning(process);
-    console.log(processStatus);
   }, 250);
 }
 
@@ -38,7 +36,7 @@ async function runningWatcher(process) {
     let currState = await isRunning(process);
 
     if (prevState !== currState) {
-      console.log(watchingStatus[treatedName]);
+      // console.log(watchingStatus[treatedName]);
       watchingStatus[treatedName] = currState;
     }
 
@@ -57,7 +55,7 @@ async function checkBothRunning() {
     await wait(250);
   }
 
-  console.log(isBothRunning);
+  // console.log(isBothRunning);
 
   return isBothRunning;
 }

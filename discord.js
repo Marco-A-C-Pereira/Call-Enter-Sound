@@ -1,7 +1,7 @@
 import WebSocket from "ws";
 import ENV from "./config.json" assert { type: "json" };
 import { playSound } from "./soundpad.js";
-import { isRunning, wait, watchingStatus } from "./utils.js";
+import { watchingStatus } from "./utils.js";
 
 export { startWebSocket, discordGateStatus };
 
