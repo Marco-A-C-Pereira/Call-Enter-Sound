@@ -1,15 +1,15 @@
 import * as net from "net";
 import ENV from "./config.json" assert { type: "json" };
 import { watchingStatus } from "./utils.js";
+import { toJson } from "xml2json";
 
+let soundpadClient;
+let soundList = [];
 export let soundpadPipeStatus = false;
-
-let client;
-let soundList;
 
 export function playSound() {
   // Cat Index, Sound Index, Play to Speakers, Play to Mic
-  client.write(
+  soundpadClient.write(
     `DoPlaySoundFromCategory(${ENV.SOUNDPAD_CATEGORY_INDEX},${ENV.SOUNDPAD_SOUND_INDEX},${ENV.SOUNDPAD_PLAY_ON_SPEAKERS},true)`
   ); // TODO: FIX SOUND LIB INDEX BUG
 }
@@ -25,45 +25,55 @@ async function createConnection() {
 }
 
 function addEvents() {
-  client.on("data", (data) => {
+  soundpadClient.on("data", async (data) => {
     if (data.toString() !== "R-200") {
-      let parsedData = JSON.parse(parser.toJson(data));
-      SoundList = parsedData.Soundlist.Sound;
-
-      SoundList.forEach((sound) => {
-        const { index, title, url } = sound;
-        console.log(fs.existsSync(url));
-        // console.log("Index: ", sound.index, " Name: ", sound.title);
-      });
+      await getSounds(data);
+    } else {
+      // Data ?
     }
   });
 
-  client.on("end", () => {
+  soundpadClient.on("end", () => {
     console.log("Disconnected from pipe");
     soundpadPipeStatus = false;
   });
 
-  client.on("error", cleanup);
+  soundpadClient.on("error", cleanup);
 }
 
 function cleanup(err) {
-  client = undefined;
+  soundpadClient = undefined;
   soundpadPipeStatus = false;
 }
 
 function soundpadOperations() {
   setInterval(async () => {
-    if (watchingStatus.Soundpad && client == undefined) {
-      client = await createConnection();
+    if (watchingStatus.Soundpad && soundpadClient == undefined) {
+      soundpadClient = await createConnection();
       addEvents();
-    } else if (!watchingStatus.Soundpad && client !== undefined) {
-      client = await createConnection();
+    } else if (!watchingStatus.Soundpad && soundpadClient !== undefined) {
+      soundpadClient = await createConnection();
     }
   }, 250);
 }
 
 async function getSoundList() {
-  return client.write("GetSoundlist()");
+  return soundpadClient.write("GetSoundlist()");
+}
+
+async function getSounds(data) {
+  const parsedData = JSON.parse(toJson(data));
+  const parsedSoundList = parsedData.Soundlist.Sound;
+
+  parsedSoundList.forEach((sound) => {
+    const { index, title, url } = sound;
+    let soundObj = {
+      index: index,
+      name: title,
+      path: url,
+    };
+    soundList.push(soundObj);
+  });
 }
 
 soundpadOperations();
