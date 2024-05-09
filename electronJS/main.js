@@ -1,16 +1,22 @@
 import { app, BrowserWindow, ipcMain } from "electron";
-import { join } from "node:path";
+import { join, dirname } from "node:path";
+import { fileURLToPath } from "url";
 
 import { handlePlaySound } from "./handlers.js";
 
 function createWindow() {
-  // Create the browser window.
+  const directory = dirname(fileURLToPath(import.meta.url));
+
+  console.log("-----------------------------");
+  console.log();
+  console.log("-----------------------------");
+
   const mainWindow = new BrowserWindow({
     width: 800,
     height: 600,
     autoHideMenuBar: true,
     webPreferences: {
-      preload: "electronJs/preload.js",
+      preload: join(directory, "preload.js"),
     },
   });
 

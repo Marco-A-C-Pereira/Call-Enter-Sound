@@ -9,9 +9,7 @@ export let soundpadPipeStatus = false;
 
 export function playSound() {
   // Cat Index, Sound Index, Play to Speakers, Play to Mic
-  soundpadClient.write(
-    `DoPlaySoundFromCategory(${ENV.SOUNDPAD_CATEGORY_INDEX},${ENV.SOUNDPAD_SOUND_INDEX},${ENV.SOUNDPAD_PLAY_ON_SPEAKERS},true)`
-  ); // TODO: FIX SOUND LIB INDEX BUG
+  soundpadClient.write("DoPlaySoundFromCategory(3,1,true,true)");
 }
 
 async function createConnection() {
