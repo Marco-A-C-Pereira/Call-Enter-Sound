@@ -4,7 +4,7 @@ import { watchingStatus } from "./utils.js";
 import { xml2json } from "xml-js";
 
 let soundpadClient;
-let soundList = [];
+export let soundList = [];
 export let soundpadPipeStatus = false;
 
 export function playSound() {
@@ -18,7 +18,7 @@ async function createConnection() {
   return net.createConnection(pipePath, () => {
     console.log("Soundpad Pipe Ready");
     soundpadPipeStatus = true;
-    getSoundList();
+    soundpadClient.write("GetSoundlist()");
   });
 }
 
@@ -33,7 +33,7 @@ function addEvents() {
 
   soundpadClient.on("end", () => {
     console.log("Disconnected from pipe");
-    soundpadPipeStatus = false;
+    cleanup();
   });
 
   soundpadClient.on("error", cleanup);
@@ -42,6 +42,7 @@ function addEvents() {
 function cleanup(err) {
   soundpadClient = undefined;
   soundpadPipeStatus = false;
+  soundList = [];
 }
 
 function soundpadOperations() {
@@ -53,10 +54,6 @@ function soundpadOperations() {
       soundpadClient = await createConnection();
     }
   }, 250);
-}
-
-async function getSoundList() {
-  return soundpadClient.write("GetSoundlist()");
 }
 
 async function getSounds(data) {
@@ -72,6 +69,10 @@ async function getSounds(data) {
     };
     soundList.push(soundObj);
   });
+}
+
+export async function returnSounds() {
+  return soundList;
 }
 
 soundpadOperations();

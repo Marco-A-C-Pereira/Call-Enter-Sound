@@ -2,7 +2,11 @@ import { app, BrowserWindow, ipcMain } from "electron";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "url";
 
-import { handlePlaySound } from "./handlers.js";
+import {
+  handlePlaySound,
+  handleSoundpadStatus,
+  handleGetSounds,
+} from "./handlers.js";
 
 function createWindow() {
   const directory = dirname(fileURLToPath(import.meta.url));
@@ -40,4 +44,6 @@ app.on("window-all-closed", function () {
 
 function addIpcMainChannels() {
   ipcMain.handle("play-sound", handlePlaySound);
+  ipcMain.handle("get-sounds", handleGetSounds);
+  ipcMain.handle("pipe-status", handleSoundpadStatus);
 }
