@@ -1,6 +1,6 @@
-const { playSound } = require("../soundpad");
+import { playSound } from "../soundpad.js";
 
-module.exports = { handlePlaySound };
+export { handlePlaySound };
 
 async function handlePlaySound() {
   playSound();

@@ -1,7 +1,7 @@
-const { app, BrowserWindow, ipcMain } = require("electron");
-const path = require("node:path");
+import { app, BrowserWindow, ipcMain } from "electron";
+import { join } from "node:path";
 
-const { handlePlaySound } = require("./handlers.js");
+import { handlePlaySound } from "./handlers.js";
 
 function createWindow() {
   // Create the browser window.
@@ -10,12 +10,12 @@ function createWindow() {
     height: 600,
     autoHideMenuBar: true,
     webPreferences: {
-      preload: path.join(__dirname, "preload.js"),
+      preload: "electronJs/preload.js",
     },
   });
 
   // and load the index.html of the app.
-  mainWindow.loadFile("index.html");
+  mainWindow.loadFile("electronJs/index.html");
 
   // Open the DevTools.
   mainWindow.webContents.openDevTools();
