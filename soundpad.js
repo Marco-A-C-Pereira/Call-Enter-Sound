@@ -1,7 +1,7 @@
 import * as net from "net";
 import ENV from "./config.json" assert { type: "json" };
 import { watchingStatus } from "./utils.js";
-import { toJson } from "xml2json";
+import { xml2json } from "xml-js";
 
 let soundpadClient;
 let soundList = [];
@@ -62,11 +62,11 @@ async function getSoundList() {
 }
 
 async function getSounds(data) {
-  const parsedData = JSON.parse(toJson(data));
+  const parsedData = JSON.parse(xml2json(data, { compact: true }));
   const parsedSoundList = parsedData.Soundlist.Sound;
 
   parsedSoundList.forEach((sound) => {
-    const { index, title, url } = sound;
+    const { index, title, url } = sound._attributes;
     let soundObj = {
       index: index,
       name: title,
