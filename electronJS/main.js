@@ -7,10 +7,6 @@ import { handlePlaySound } from "./handlers.js";
 function createWindow() {
   const directory = dirname(fileURLToPath(import.meta.url));
 
-  console.log("-----------------------------");
-  console.log();
-  console.log("-----------------------------");
-
   const mainWindow = new BrowserWindow({
     width: 800,
     height: 600,
