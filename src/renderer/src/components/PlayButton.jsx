@@ -3,7 +3,7 @@ export default function PlayButton() {
 
   return (
     <div>
-      <button onClick={playSound}>PlayButton</button>
+      <button className="bg-red-300 rounded-md p-2" onClick={playSound}>PlayButton</button>
     </div>
   )
 }
