@@ -1,4 +1,4 @@
-import { isRunning, watcher, watchingStatus } from './utils.js'
+import { isRunning, watcher } from './utils.js'
 
 import { createConnection } from 'net'
 import { updatePipe } from './main.js'
