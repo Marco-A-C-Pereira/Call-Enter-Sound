@@ -1,5 +1,11 @@
-export default function ConnectionStatus() {
+export default function ConnectionStatus({ pipeObj }) {
+  const { name, state } = pipeObj
+
   return (
-    <div>ConnectionStatus</div>
+    <div>
+      <p>
+        {name} Status: {state === true ? 'on' : 'off'}
+      </p>
+    </div>
   )
 }

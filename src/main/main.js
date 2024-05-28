@@ -8,8 +8,6 @@ import { soundpadOperations } from './soundpad.js'
 let mainWindow
 
 function createWindow() {
-  console.log(join(__dirname, '../preload/preload.js'))
-  // Create the browser window.
   mainWindow = new BrowserWindow({
     width: 900,
     height: 670,
@@ -58,7 +56,6 @@ app.whenReady().then(() => {
   })
 
   addEventListeners()
-
   createWindow()
 })
 
@@ -78,7 +75,7 @@ function addEventListeners() {
   ipcMain.on('recive-msg', handleReciveMsg)
 }
 
-export function sendMsgToMain() {
-  console.log('gonna send')
-  mainWindow.webContents.send('send-msg', 'Sent from soundpad')
+export function updatePipe(pipeName, state) {
+  console.log('updating pipe...')
+  mainWindow.webContents.send('pipe-update', { name: pipeName, state: state })
 }

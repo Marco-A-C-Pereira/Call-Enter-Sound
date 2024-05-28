@@ -1,5 +1,5 @@
 import { createConnection } from 'net'
-import { sendMsgToMain } from './main.js'
+import { updatePipe } from './main.js'
 import { watchingStatus } from './utils.js'
 import { xml2json } from 'xml-js'
 
@@ -19,7 +19,7 @@ async function createPipeConnection() {
   return createConnection(pipePath, () => {
     console.log('Soundpad Pipe Ready')
     soundpadClient.write('GetSoundlist()')
-    sendMsgToMain()
+    updatePipe('Soundpad', true)
   })
 }
 
@@ -54,6 +54,7 @@ async function generateSoundList(data) {
 function cleanup() {
   soundpadClient = undefined
   soundList = []
+  updatePipe('Soundpad', false)
 }
 
 function soundpadOperations() {
