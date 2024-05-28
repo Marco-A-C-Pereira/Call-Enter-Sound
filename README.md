@@ -1,17 +1,34 @@
-# Enter Call Sound
+# join-announcer
 
-A Integration Between Discord and Soundpad based on NodeJS. I don't like how discord handles it so I made it my own implementation of it.
+An Electron application with React
 
-## How it works
+## Recommended IDE Setup
 
-It uses Soundpad Windows Pipe and Discord gateway for listening to the user voice activity.
+- [VSCode](https://code.visualstudio.com/) + [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint) + [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
 
-## How to run
+## Project Setup
 
-Clone this repo and do a
+### Install
 
+```bash
+$ npm install
 ```
- npm init
+
+### Development
+
+```bash
+$ npm run dev
 ```
 
-The config file will de available soon as the interface is implemented
+### Build
+
+```bash
+# For windows
+$ npm run build:win
+
+# For macOS
+$ npm run build:mac
+
+# For Linux
+$ npm run build:linux
+```
