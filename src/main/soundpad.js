@@ -1,6 +1,7 @@
+import { isRunning, watcher, watchingStatus } from './utils.js'
+
 import { createConnection } from 'net'
 import { updatePipe } from './main.js'
-import { watchingStatus } from './utils.js'
 import { xml2json } from 'xml-js'
 
 export { playSound, returnSounds, soundList, soundpadOperations }
@@ -11,6 +12,11 @@ let soundList = []
 function playSound() {
   // Cat Index, Sound Index, Play to Speakers, Play to Mic
   soundpadClient.write('DoPlaySoundFromCategory(3,1,true,true)')
+}
+
+async function createPipe() {
+  soundpadClient = await createPipeConnection()
+  addEvents()
 }
 
 async function createPipeConnection() {
@@ -55,17 +61,14 @@ function cleanup() {
   soundpadClient = undefined
   soundList = []
   updatePipe('Soundpad', false)
+  watcher('Soundpad.exe', soundpadOperations)
 }
 
-function soundpadOperations() {
-  setInterval(async () => {
-    if (watchingStatus.Soundpad && soundpadClient == undefined) {
-      soundpadClient = await createPipeConnection()
-      addEvents()
-    } else if (!watchingStatus.Soundpad && soundpadClient !== undefined) {
-      soundpadClient = await createPipeConnection()
-    }
-  }, 250)
+async function soundpadOperations() {
+  const processName = 'Soundpad.exe'
+
+  if (await isRunning(processName)) createPipe()
+  else watcher(processName, soundpadOperations)
 }
 
 async function returnSounds() {

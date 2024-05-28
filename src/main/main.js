@@ -1,9 +1,9 @@
 import { BrowserWindow, app, ipcMain, shell } from 'electron'
 import { electronApp, is, optimizer } from '@electron-toolkit/utils'
 import { handlePlaySound, handleReciveMsg } from './handlers.js'
+import { newMain, soundpadOperations } from './soundpad.js'
 
 import { join } from 'path'
-import { soundpadOperations } from './soundpad.js'
 
 let mainWindow
 
@@ -21,7 +21,8 @@ function createWindow() {
 
   mainWindow.on('ready-to-show', () => {
     mainWindow.show()
-    soundpadOperations()
+    newMain()
+    // soundpadOperations()
   })
 
   mainWindow.webContents.setWindowOpenHandler((details) => {
