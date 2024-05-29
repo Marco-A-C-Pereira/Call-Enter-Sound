@@ -2,6 +2,7 @@ import { playSound } from './soundpad.js'
 
 export { handlePlaySound }
 
-async function handlePlaySound(index) {
+async function handlePlaySound(event, index) {
+  console.log(index)
   playSound(index)
 }

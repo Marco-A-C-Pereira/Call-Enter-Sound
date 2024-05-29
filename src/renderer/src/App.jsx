@@ -1,5 +1,4 @@
 import ConnectionStatus from './components/ConnectionStatus'
-import PlayButton from './components/PlayButton'
 import SoundList from './components/SoundList'
 import { useState } from 'react'
 
@@ -27,9 +26,10 @@ function App() {
 
   return (
     <div className="font-sans">
-      <div className="flex justify-center gap-6 bg-purple-400">
+      <div className="flex justify-center gap-6 pt-4 bg-purple-400">
         <ConnectionStatus pipeObj={soundpadPipeStatus} />
         <ConnectionStatus pipeObj={discordWebsocketStatus} />
+        <button className="ml-auto mr-4 bg-red-400 cursor-pointer">Gear</button>
       </div>
       <SoundList />
     </div>
