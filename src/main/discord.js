@@ -1,5 +1,6 @@
 import { WebSocket } from 'ws'
 import ENV from './config.json' assert { type: 'json' }
+import { electronStore } from './settings.js'
 import { playSound } from './soundpad.js'
 import { isRunning, watcher } from './utils.js'
 import { updatePipe } from './main.js'
@@ -115,7 +116,7 @@ const startWebSocket = () => {
 
         if (isFromUser && canPlay) {
           setTimeout(() => {
-            playSound()
+            playSound(electronStore.get('selectedSound'))
           }, 500)
         }
 

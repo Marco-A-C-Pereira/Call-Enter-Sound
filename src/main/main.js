@@ -1,7 +1,7 @@
 import { BrowserWindow, app, ipcMain, shell } from 'electron'
 import { electronApp, is, optimizer } from '@electron-toolkit/utils'
+import { handleGetStorage, handlePlaySound, handleSetStorage } from './handlers.js'
 
-import { handlePlaySound } from './handlers.js'
 import { join } from 'path'
 import { newMain } from './discord.js'
 import { soundpadOperations } from './soundpad.js'
@@ -15,7 +15,7 @@ function createWindow() {
     show: false,
     autoHideMenuBar: true,
     webPreferences: {
-      preload: join(__dirname, '../preload/preload.js'),
+      preload: join(__dirname, '../preload/preload.mjs'),
       sandbox: false
     }
   })
@@ -72,6 +72,8 @@ app.on('window-all-closed', () => {
 
 function addEventListeners() {
   ipcMain.on('play-sound', handlePlaySound)
+  ipcMain.on('set-storage', handleSetStorage)
+  ipcMain.on('get-storage', handleGetStorage)
 }
 
 export function updatePipe(pipeName, state) {
@@ -81,3 +83,5 @@ export function updatePipe(pipeName, state) {
 export function sendSoundList(soundList) {
   mainWindow.webContents.send('send-sound', soundList)
 }
+
+// getStorage('selectedSound')

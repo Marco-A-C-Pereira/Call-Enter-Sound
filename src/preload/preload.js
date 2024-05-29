@@ -8,10 +8,16 @@ const api = {
   sendSounds: (callback) => ipcRenderer.on('send-sound', (_event, value) => callback(value))
 }
 
+const storage = {
+  get: (key) => ipcRenderer.sendSync('get-storage', key),
+  set: (key, data) => ipcRenderer.send('set-storage', key, data)
+}
+
 if (process.contextIsolated) {
   try {
     contextBridge.exposeInMainWorld('electron', electronAPI)
     contextBridge.exposeInMainWorld('api', api)
+    contextBridge.exposeInMainWorld('storage', storage)
   } catch (error) {
     console.error(error)
   }
