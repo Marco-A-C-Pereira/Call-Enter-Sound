@@ -2,6 +2,7 @@ import { isRunning, watcher } from './utils.js'
 import { sendSoundList, updatePipe } from './main.js'
 
 import { createConnection } from 'net'
+import { electronStore } from './settings.js'
 import { xml2json } from 'xml-js'
 
 export { playSound, soundpadOperations }
@@ -9,10 +10,9 @@ export { playSound, soundpadOperations }
 let soundpadClient
 
 function playSound(index) {
-  // Cat Index, Sound Index, Play to Speakers, Play to Mic
-  // soundpadClient.write('DoPlaySoundFromCategory(3,1,true,true)')
-  soundpadClient.write(`DoPlaySound(${index}},true,true)`)
-  // soundpadClient.write(`DoPlaySound(${index}},true,true)`)
+  const hearSound = electronStore.get('playOnSpeakers')
+  // Sound Index, Play to Speakers, Play to Mic
+  soundpadClient.write(`DoPlaySound(${index}},${hearSound},true)`)
 }
 
 async function createPipe() {

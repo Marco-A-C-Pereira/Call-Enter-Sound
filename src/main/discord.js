@@ -113,8 +113,10 @@ const startWebSocket = () => {
         const canPlay =
           clientCurrentChanel == null ||
           (d.channel_id !== null && clientCurrentChanel != d.channel_id)
+        // const playAfterUnmute = electronStore.get('playOnUnmute') ? d.self_mute !== true : true
+        const playAfterUnmute = d.self_mute !== true && electronStore.get('playOnUnmute')
 
-        if (isFromUser && canPlay) {
+        if (isFromUser && playAfterUnmute && canPlay) {
           setTimeout(() => {
             playSound(electronStore.get('selectedSound'))
           }, 500)

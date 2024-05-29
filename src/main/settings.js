@@ -6,7 +6,7 @@ const schema = {
     default: '1'
   },
   gatewayToken: { type: 'string', default: '' },
-  playOnUnmute: { type: 'boolean', default: false },
+  playOnUnmute: { type: 'boolean', default: true },
   playOnSpeakers: { type: 'boolean', default: true }
 }
 

@@ -1,4 +1,5 @@
 import ConnectionStatus from './components/ConnectionStatus'
+import Drawer from './components/Drawer.jsx'
 import SoundList from './components/SoundList'
 import { useState } from 'react'
 
@@ -24,12 +25,20 @@ function App() {
     state: false
   })
 
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false)
+  function handleDrawerState() {
+    setIsDrawerOpen((prevIsDrawerOpen) => !prevIsDrawerOpen)
+  }
+
   return (
     <div className="font-sans">
+      {isDrawerOpen ? <Drawer drawerHandler={handleDrawerState} /> : ''}
       <div className="flex justify-center gap-6 pt-4 bg-purple-400">
         <ConnectionStatus pipeObj={soundpadPipeStatus} />
         <ConnectionStatus pipeObj={discordWebsocketStatus} />
-        <button className="ml-auto mr-4 bg-red-400 cursor-pointer">Gear</button>
+        <button onClick={handleDrawerState} className="ml-auto mr-4 bg-red-400 cursor-pointer">
+          Gear
+        </button>
       </div>
       <SoundList />
     </div>
