@@ -1,7 +1,7 @@
 import { BrowserWindow, app, ipcMain, shell } from 'electron'
 import { electronApp, is, optimizer } from '@electron-toolkit/utils'
-import { handlePlaySound, handleReciveMsg } from './handlers.js'
 
+import { handlePlaySound } from './handlers.js'
 import { join } from 'path'
 import { newMain } from './discord.js'
 import { soundpadOperations } from './soundpad.js'
@@ -71,13 +71,13 @@ app.on('window-all-closed', () => {
 })
 
 function addEventListeners() {
-  // ipcMain.handle("soundpad-pipe-status", handleSetPipeStatus);
-  // ipcMain.handle("get-sounds", handleGetSounds);
-  ipcMain.handle('play-sound', handlePlaySound)
-  ipcMain.on('recive-msg', handleReciveMsg)
+  ipcMain.on('play-sound', handlePlaySound)
 }
 
 export function updatePipe(pipeName, state) {
-  console.log('updating pipe...')
   mainWindow.webContents.send('pipe-update', { name: pipeName, state: state })
+}
+
+export function sendSoundList(soundList) {
+  mainWindow.webContents.send('send-sound', soundList)
 }

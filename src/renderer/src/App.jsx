@@ -1,10 +1,17 @@
 import ConnectionStatus from './components/ConnectionStatus'
 import PlayButton from './components/PlayButton'
+import SoundList from './components/SoundList'
 import { useState } from 'react'
 
 function App() {
   window.api.updatePipe((value) => {
-    setSoundpadPipeStatus(value)
+    switch (value.name) {
+      case 'Soundpad':
+        setSoundpadPipeStatus(value)
+        break
+      case 'Discord':
+        setDiscordWebsocketStatus(value)
+    }
   })
 
   // eslint-disable-next-line no-unused-vars
@@ -13,13 +20,19 @@ function App() {
     state: false
   })
 
+  const [discordWebsocketStatus, setDiscordWebsocketStatus] = useState({
+    name: 'Discord',
+    state: false
+  })
+
   return (
-    <>
-      <div className="flex gap-6">
+    <div className="font-sans">
+      <div className="flex justify-center gap-6 bg-purple-400">
         <ConnectionStatus pipeObj={soundpadPipeStatus} />
+        <ConnectionStatus pipeObj={discordWebsocketStatus} />
       </div>
-      <PlayButton />
-    </>
+      <SoundList />
+    </div>
   )
 }
 

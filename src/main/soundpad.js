@@ -1,17 +1,18 @@
 import { isRunning, watcher } from './utils.js'
+import { sendSoundList, updatePipe } from './main.js'
 
 import { createConnection } from 'net'
-import { updatePipe } from './main.js'
 import { xml2json } from 'xml-js'
 
-export { playSound, returnSounds, soundList, soundpadOperations }
+export { playSound, soundpadOperations }
 
 let soundpadClient
-let soundList = []
 
-function playSound() {
+function playSound(index) {
   // Cat Index, Sound Index, Play to Speakers, Play to Mic
-  soundpadClient.write('DoPlaySoundFromCategory(3,1,true,true)')
+  // soundpadClient.write('DoPlaySoundFromCategory(3,1,true,true)')
+  soundpadClient.write(`DoPlaySound(${index}},true,true)`)
+  // soundpadClient.write(`DoPlaySound(${index}},true,true)`)
 }
 
 async function createPipe() {
@@ -45,21 +46,23 @@ function addEvents() {
 async function generateSoundList(data) {
   const parsedData = JSON.parse(xml2json(data, { compact: true }))
   const parsedSoundList = parsedData.Soundlist.Sound
+  let soundList = []
 
   parsedSoundList.forEach((sound) => {
-    const { index, title, url } = sound._attributes
+    const { index, title, duration } = sound._attributes
     let soundObj = {
       index: index,
       name: title,
-      path: url
+      duration: duration
     }
     soundList.push(soundObj)
   })
+
+  sendSoundList(soundList)
 }
 
 function cleanup() {
   soundpadClient = undefined
-  soundList = []
   updatePipe('Soundpad', false)
   watcher('Soundpad.exe', soundpadOperations)
 }
@@ -69,8 +72,4 @@ async function soundpadOperations() {
 
   if (await isRunning(processName)) createPipe()
   else watcher(processName, soundpadOperations)
-}
-
-async function returnSounds() {
-  return soundList
 }

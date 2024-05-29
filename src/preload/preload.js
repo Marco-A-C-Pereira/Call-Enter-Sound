@@ -3,8 +3,9 @@ import { contextBridge, ipcRenderer } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
 
 const api = {
-  playSound: () => ipcRenderer.invoke('play-sound'),
-  updatePipe: (callback) => ipcRenderer.on('pipe-update', (_event, value) => callback(value))
+  playSound: (index) => ipcRenderer.send('play-sound', index),
+  updatePipe: (callback) => ipcRenderer.on('pipe-update', (_event, value) => callback(value)),
+  sendSounds: (callback) => ipcRenderer.on('send-sound', (_event, value) => callback(value))
 }
 
 if (process.contextIsolated) {
