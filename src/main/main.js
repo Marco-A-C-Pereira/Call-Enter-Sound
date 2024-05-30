@@ -1,4 +1,4 @@
-import { BrowserWindow, app, ipcMain, shell } from 'electron'
+import { BrowserWindow, Menu, Tray, app, ipcMain, shell } from 'electron'
 import { electronApp, is, optimizer } from '@electron-toolkit/utils'
 import { handleGetStorage, handlePlaySound, handleSetStorage } from './handlers.js'
 
@@ -6,7 +6,7 @@ import { join } from 'path'
 import { newMain } from './discord.js'
 import { soundpadOperations } from './soundpad.js'
 
-let mainWindow
+let mainWindow, tray
 
 function createWindow() {
   mainWindow = new BrowserWindow({
@@ -57,18 +57,44 @@ app.whenReady().then(() => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow()
   })
 
+  app.on('window-all-closed', () => {
+    if (process.platform !== 'darwin') {
+      app.quit()
+    }
+  })
+
   addEventListeners()
+  addTraryMenu()
   createWindow()
+
+  mainWindow.on('restore', () => {
+    mainWindow.setSkipTaskbar(false)
+  })
+
+  mainWindow.on('minimize', () => {
+    mainWindow.setSkipTaskbar(true)
+  })
 })
 
-// Quit when all windows are closed, except on macOS. There, it's common
-// for applications and their menu bar to stay active until the user quits
-// explicitly with Cmd + Q.
-app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
-    app.quit()
-  }
-})
+function addTraryMenu() {
+  tray = new Tray(join(__dirname, '../../resources/icon.png'))
+
+  const trayMenu = Menu.buildFromTemplate([
+    {
+      label: 'Show',
+      click: () => {
+        mainWindow.restore()
+      }
+    },
+    {
+      label: 'Quit',
+      role: 'quit'
+    }
+  ])
+
+  tray.setToolTip('Cu pretium')
+  tray.setContextMenu(trayMenu)
+}
 
 function addEventListeners() {
   ipcMain.on('play-sound', handlePlaySound)
@@ -83,5 +109,3 @@ export function updatePipe(pipeName, state) {
 export function sendSoundList(soundList) {
   mainWindow.webContents.send('send-sound', soundList)
 }
-
-// getStorage('selectedSound')
