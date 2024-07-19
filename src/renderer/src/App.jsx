@@ -35,19 +35,13 @@ function App() {
         onClick={handleDrawerState}
         className="fill-purple-700 absolute h-16 right-2 top-2 bg-red-400 p-1 rounded-lg cursor-pointer"
       />
-      {isDrawerOpen ? <Drawer drawerHandler={handleDrawerState} /> : ''}
+      {isDrawerOpen ? <Drawer discordPipe={discordWebsocketStatus} drawerHandler={handleDrawerState} /> : ''}
       <div className="flex flex-col relative w-fit mx-auto bg-red-400 rounded-lg px-8 py-4">
         <h1 className="text-3xl uppercase font-extrabold text-center">Join announcer</h1>
         <div className="flex justify-center gap-12 ">
           <ConnectionStatus pipeObj={soundpadPipeStatus} />
           <ConnectionStatus pipeObj={discordWebsocketStatus} />
         </div>
-        {/* <button
-          onClick={handleDrawerState}
-          className="bg-red-400 absolute h-full right-0 cursor-pointer"
-        >
-          Gear
-        </button> */}
       </div>
       <SoundList />
     </div>
