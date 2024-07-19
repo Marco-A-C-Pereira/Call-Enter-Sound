@@ -9,10 +9,6 @@ export default function Checkbox({ label, storageKey }) {
   }
 
   return (
-    // <div className="flex">
-    //   <input type="checkbox" checked={checkboxState} onChange={handleCheckboxState} />
-    //   <p className="text-xl">{label}</p>
-    // </div>
     <label className="inline-flex items-center cursor-pointer ">
       <input
         type="checkbox"

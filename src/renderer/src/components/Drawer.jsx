@@ -3,11 +3,11 @@ import { XCircleIcon } from '@heroicons/react/16/solid'
 import { useState } from 'react';
 
 export default function Drawer({ drawerHandler }) {
-  const [discordToken, setDiscordToken] = useState(window.storage.get('discordToken') != undefined ? window.storage.get('discordToken') : '' )
+  const [discordToken, setDiscordToken] = useState(window.storage.get('gatewayToken'))
 
   function handleTokenInput(inputValue) {
     setDiscordToken(inputValue)
-    window.storage.set('discordToken', inputValue)
+    window.storage.set('gatewayToken', inputValue)
   }
 
   return (

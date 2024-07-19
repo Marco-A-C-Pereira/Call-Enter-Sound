@@ -1,8 +1,8 @@
+import { isRunning, watcher } from './utils.js'
+
 import { WebSocket } from 'ws'
-import ENV from './config.json' assert { type: 'json' }
 import { electronStore } from './settings.js'
 import { playSound } from './soundpad.js'
-import { isRunning, watcher } from './utils.js'
 import { updatePipe } from './main.js'
 
 export { newMain }
@@ -17,7 +17,7 @@ let interval = 0,
 let payload = {
   op: 2,
   d: {
-    token: ENV.GATEWAY_TOKEN,
+    token: electronStore.get('gatewayToken'),
     intents: 128, // Just to read guild activity
     // intents: 33280,
     properties: {
@@ -49,7 +49,7 @@ const startWebSocket = () => {
       const resumePayload = {
         op: 6,
         d: {
-          token: ENV.GATEWAY_TOKEN,
+          token: electronStore.get('gatewayToken'),
           sessionId,
           seq
         }
@@ -59,18 +59,25 @@ const startWebSocket = () => {
     }
   })
 
-  ws.on('error', async () => {
+  ws.on('error', async (e) => {
     await cleanup()
   })
 
-  ws.on('close', async () => {
-    if (wasReady) console.log('Gateway closed, trying to reconnect')
-
-    if (await isRunning(processName)) {
-      setTimeout(() => {
-        startWebSocket()
-      }, 2500)
+  ws.on('close', async (e) => {
+    switch (e) {
+      case 4004:
+        console.log('Auth failed')
+        break
+      default:
+        console.log('you fucked up')
     }
+    // if (wasReady) console.log('Gateway closed, trying to reconnect')
+
+    // if (await isRunning(processName)) {
+    //   setTimeout(() => {
+    //     startWebSocket()
+    //   }, 2500)
+    // }
 
     await cleanup()
   })
@@ -132,17 +139,20 @@ async function cleanup() {
   url = gatewayUrl
   if (ws !== undefined) await ws.close()
   ws = undefined
+  clearInterval(interval)
   updatePipe('Discord', false)
 }
 
 async function newMain() {
   const processName = 'Discord.exe'
+  console.log('STARTING ....')
+  startWebSocket()
 
-  if ((await isRunning(processName)) && ws === undefined) startWebSocket()
-  else {
-    await cleanup()
-    watcher(processName, newMain)
-  }
+  // if ((await isRunning(processName)) && ws === undefined) startWebSocket()
+  // else {
+  //   await cleanup()
+  //   watcher(processName, newMain)
+  // }
 }
 
 function discordOperations() {
