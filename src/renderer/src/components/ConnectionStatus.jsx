@@ -1,16 +1,29 @@
-export default function ConnectionStatus({ pipeObj }) {
-  const { name, state } = pipeObj
-  const bgColor = state === true ? 'bg-green-600' : 'bg-red-600'
+function ColorBall({ state }) {
+  const shadowSate = state ? 'shadow-[inset_0_0_0_20px_rgb(132,204,22)]' : ''
 
   return (
-    <div className="h-8 text-lg font-bold tracking-wide">
+    <div
+      className={
+        'h-5 flex items-center justify-center rounded-full transition-shadow duration-500 aspect-square bg-sky-400 ' +
+        shadowSate
+      }
+    />
+  )
+}
+
+export default function ConnectionStatus({ pipeObj }) {
+  const { name, state } = pipeObj
+  // const [flipper, setflipper] = useState(false)
+
+  // setInterval(() => {
+  //   setflipper((prevflipper) => !prevflipper)
+  // }, 3000)
+
+  return (
+    <div className="h-8 text-lg font-bold tracking-wide ">
       <div className="flex items-center gap-2">
-        <p>{name} Status:</p>
-        <div
-          className={`h-5 flex items-center justify-center  rounded-full shadow-inner shadow-cyan-500 border border-black aspect-square ${bgColor} `}
-        >
-          <div className="h-2 translate-x-1 -translate-y-1 bg-white rounded-full opacity-30 aspect-square" />
-        </div>
+        <p className="">{name}:</p>
+        <ColorBall state={state} />
       </div>
     </div>
   )

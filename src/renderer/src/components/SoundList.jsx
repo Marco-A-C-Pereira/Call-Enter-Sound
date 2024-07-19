@@ -15,7 +15,7 @@ export default function SoundList() {
   }
 
   return (
-    <div className="flex flex-wrap gap-4 px-6 pt-8">
+    <div className="flex flex-wrap gap-4 bg-blue-200 rounded-lg h-full mt-8 overflow-y-scroll content-start justify-center py-8 scrollbar-thin scrollbar-thumb-black ">
       {soundList.length < 1
         ? ''
         : soundList.map((sound) => {

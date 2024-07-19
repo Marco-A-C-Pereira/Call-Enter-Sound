@@ -1,3 +1,4 @@
+import { Cog6ToothIcon } from '@heroicons/react/16/solid'
 import ConnectionStatus from './components/ConnectionStatus'
 import Drawer from './components/Drawer.jsx'
 import SoundList from './components/SoundList'
@@ -14,12 +15,10 @@ function App() {
     }
   })
 
-  // eslint-disable-next-line no-unused-vars
   const [soundpadPipeStatus, setSoundpadPipeStatus] = useState({
     name: 'Soundpad',
     state: false
   })
-
   const [discordWebsocketStatus, setDiscordWebsocketStatus] = useState({
     name: 'Discord',
     state: false
@@ -31,14 +30,24 @@ function App() {
   }
 
   return (
-    <div className="font-sans">
+    <div className="font-sans h-screen max-h-screen overflow-hidden flex flex-col px-12 py-8 bg-[url('../assets/hexagons.svg')]">
+      <Cog6ToothIcon
+        onClick={handleDrawerState}
+        className="fill-purple-700 absolute h-16 right-2 top-2 bg-red-400 p-1 rounded-lg cursor-pointer"
+      />
       {isDrawerOpen ? <Drawer drawerHandler={handleDrawerState} /> : ''}
-      <div className="flex justify-center gap-6 pt-4 bg-purple-400">
-        <ConnectionStatus pipeObj={soundpadPipeStatus} />
-        <ConnectionStatus pipeObj={discordWebsocketStatus} />
-        <button onClick={handleDrawerState} className="ml-auto mr-4 bg-red-400 cursor-pointer">
+      <div className="flex flex-col relative w-fit mx-auto bg-red-400 rounded-lg px-8 py-4">
+        <h1 className="text-3xl uppercase font-extrabold text-center">Join announcer</h1>
+        <div className="flex justify-center gap-12 ">
+          <ConnectionStatus pipeObj={soundpadPipeStatus} />
+          <ConnectionStatus pipeObj={discordWebsocketStatus} />
+        </div>
+        {/* <button
+          onClick={handleDrawerState}
+          className="bg-red-400 absolute h-full right-0 cursor-pointer"
+        >
           Gear
-        </button>
+        </button> */}
       </div>
       <SoundList />
     </div>

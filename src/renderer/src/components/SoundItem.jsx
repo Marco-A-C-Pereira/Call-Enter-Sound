@@ -9,11 +9,16 @@ export default function SoundItem({ soundInfo, isSelected, handleSelect }) {
     </div>
   )
 
+  const selectedStyles = isSelected ? 'bg-lime-500' : 'bg-sky-400'
+
   return (
     <button
       onClick={playSound}
       onDoubleClick={handleSelect}
-      className="relative flex gap-1 px-4 py-2 overflow-hidden font-bold border border-black cursor-pointer bg-sky-400"
+      className={
+        'relative flex gap-1 px-4 py-2 overflow-hidden h-fit font-bold text-white cursor-pointer shadow-sm ' +
+        selectedStyles
+      }
     >
       {isSelected ? selectedMark : ''}
       <p>{name}</p>
